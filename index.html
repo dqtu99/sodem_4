@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đếm Lì Xì — Luyện số đếm tiếng Trung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Manrope:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #f5efdf;
+        --paper-2: #ede4cc;
+        --ink: #2a2420;
+        --ink-soft: #6b5f52;
+        --red: #b23a2e;
+        --red-deep: #8c2a22;
+        --gold: #b98a2e;
+        --gold-soft: #e4ce94;
+        --jade: #3f6e5c;
+        --jade-soft: #dce9e2;
+        --wrong: #8c3b4a;
+        --wrong-soft: #f1dcdf;
+        --card-shadow: rgba(42, 36, 32, 0.14);
+        --radius: 20px;
+      }
+      :root:not([data-theme="light"]) {
+        @media (prefers-color-scheme: dark) {
+          --paper: #211c18;
+          --paper-2: #2b2420;
+          --ink: #f1e9dc;
+          --ink-soft: #b9ab98;
+          --red: #e0655a;
+          --red-deep: #c24c40;
+          --gold: #d9b564;
+          --gold-soft: #4a3e28;
+          --jade: #7fbba3;
+          --jade-soft: #23352d;
+          --wrong: #e38c97;
+          --wrong-soft: #3a2529;
+          --card-shadow: rgba(0, 0, 0, 0.4);
+        }
+      }
+      :root[data-theme="dark"] {
+        --paper: #211c18;
+        --paper-2: #2b2420;
+        --ink: #f1e9dc;
+        --ink-soft: #b9ab98;
+        --red: #e0655a;
+        --red-deep: #c24c40;
+        --gold: #d9b564;
+        --gold-soft: #4a3e28;
+        --jade: #7fbba3;
+        --jade-soft: #23352d;
+        --wrong: #e38c97;
+        --wrong-soft: #3a2529;
+        --card-shadow: rgba(0, 0, 0, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 28px 16px 56px;
+        transition: background 0.3s ease;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 560px;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 22px;
+      }
+      .hero h1 {
+        font-family: "Noto Serif SC", serif;
+        font-weight: 900;
+        font-size: clamp(26px, 6vw, 34px);
+        margin: 0 0 6px;
+        color: var(--red-deep);
+        letter-spacing: 0.5px;
+      }
+      .hero p {
+        margin: 0;
+        color: var(--ink-soft);
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .highscore {
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gold-soft);
+        color: var(--red-deep);
+        padding: 5px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .panel {
+        background: var(--paper-2);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 6px 20px var(--card-shadow);
+      }
+      .panel h2 {
+        margin: 0 0 10px;
+        font-size: 13px;
+        text-transform: none;
+        font-weight: 700;
+        color: var(--ink-soft);
+      }
+      .choice-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .choice-btn {
+        flex: 1 1 auto;
+        min-width: 96px;
+        border: 2px solid transparent;
+        background: var(--paper);
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 14px;
+        font-family: "Manrope", sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .choice-btn:hover {
+        border-color: var(--gold);
+      }
+      .choice-btn.active {
+        background: var(--red);
+        color: #fff;
+        border-color: var(--red);
+      }
+      .choice-btn small {
+        display: block;
+        font-weight: 600;
+        font-size: 11px;
+        opacity: 0.85;
+        margin-top: 2px;
+      }
+
+      .game-card {
+        background: var(--paper-2);
+        border-radius: var(--radius);
+        padding: 26px 20px 22px;
+        box-shadow: 0 10px 30px var(--card-shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .game-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(
+          circle,
+          var(--gold-soft) 0%,
+          transparent 70%
+        );
+        opacity: 0.7;
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink-soft);
+        margin-bottom: 18px;
+        position: relative;
+        z-index: 1;
+      }
+      .dots {
+        display: flex;
+        gap: 5px;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--gold-soft);
+      }
+      .dot.done {
+        background: var(--gold);
+      }
+      .dot.current {
+        background: var(--red);
+        transform: scale(1.3);
+      }
+
+      .stat-pill {
+        display: flex;
+        gap: 12px;
+      }
+
+      .question-area {
+        text-align: center;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .big-number {
+        font-family: "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 64px;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .big-hanzi {
+        font-family: "Noto Serif SC", serif;
+        font-weight: 700;
+        font-size: 54px;
+        color: var(--red-deep);
+        line-height: 1.1;
+        letter-spacing: 2px;
+      }
+
+      .speak-btn {
+        background: var(--red);
+        color: #fff;
+        border: none;
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        font-size: 34px;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+        transition: transform 0.15s ease;
+      }
+      .speak-btn:active {
+        transform: scale(0.94);
+      }
+      .speak-hint {
+        font-size: 13px;
+        color: var(--ink-soft);
+        font-weight: 600;
+      }
+
+      .options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+        margin-top: 6px;
+        position: relative;
+        z-index: 1;
+      }
+      .opt-btn {
+        border: 2px solid var(--paper);
+        background: var(--paper);
+        padding: 16px 8px;
+        border-radius: 16px;
+        font-family: "Noto Serif SC", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .opt-btn.numeral {
+        font-family: "Manrope", sans-serif;
+        font-size: 24px;
+      }
+      .opt-btn:hover:not(:disabled) {
+        border-color: var(--gold);
+        transform: translateY(-1px);
+      }
+      .opt-btn:disabled {
+        cursor: default;
+      }
+      .opt-btn.correct {
+        background: var(--jade-soft);
+        border-color: var(--jade);
+        color: var(--jade);
+      }
+      .opt-btn.wrong {
+        background: var(--wrong-soft);
+        border-color: var(--wrong);
+        color: var(--wrong);
+      }
+
+      .type-row {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        margin-top: 4px;
+        position: relative;
+        z-index: 1;
+      }
+      .type-row input {
+        flex: 1;
+        font-size: 22px;
+        font-weight: 700;
+        text-align: center;
+        padding: 12px;
+        border-radius: 14px;
+        border: 2px solid var(--gold-soft);
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Manrope", sans-serif;
+      }
+      .type-row input:focus {
+        outline: none;
+        border-color: var(--gold);
+      }
+      .type-row button {
+        background: var(--red);
+        color: #fff;
+        border: none;
+        padding: 0 22px;
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: 15px;
+        cursor: pointer;
+      }
+
+      .feedback-line {
+        min-height: 26px;
+        font-weight: 800;
+        font-size: 15px;
+        margin-top: 14px;
+        position: relative;
+        z-index: 1;
+      }
+      .feedback-line.correct {
+        color: var(--jade);
+      }
+      .feedback-line.wrong {
+        color: var(--wrong);
+      }
+
+      .next-btn {
+        margin-top: 10px;
+        background: transparent;
+        border: 2px solid var(--gold);
+        color: var(--red-deep);
+        font-weight: 800;
+        padding: 9px 20px;
+        border-radius: 999px;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+      }
+
+      .summary {
+        text-align: center;
+      }
+      .summary .score-big {
+        font-size: 52px;
+        font-weight: 900;
+        color: var(--red-deep);
+        font-family: "Noto Serif SC", serif;
+        margin: 6px 0;
+      }
+      .summary p {
+        color: var(--ink-soft);
+        font-weight: 600;
+        margin: 4px 0 18px;
+      }
+      .summary-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-primary,
+      .btn-secondary {
+        border: none;
+        padding: 12px 22px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn-secondary {
+        background: var(--paper);
+        color: var(--ink);
+        border: 2px solid var(--gold-soft);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 380px) {
+        .big-number {
+          font-size: 52px;
+        }
+        .big-hanzi {
+          font-size: 42px;
+        }
+        .opt-btn {
+          font-size: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="hero">
+        <h1>Đếm Lì Xì</h1>
+        <p>Luyện số đếm tiếng Trung qua trò chơi nhỏ</p>
+        <div class="highscore" id="highscoreBadge">🏆 Kỷ lục: 0/10</div>
+      </div>
+
+      <div class="panel" id="setupPanel">
+        <h2>Chọn mức độ</h2>
+        <div class="choice-row" id="levelRow"></div>
+        <h2 style="margin-top: 14px">Chọn cách chơi</h2>
+        <div class="choice-row" id="modeRow"></div>
+      </div>
+      <div class="game-card" id="gameCard">
+        <div class="top-row">
+          <div class="dots" id="dots"></div>
+          <div class="stat-pill">
+            <span id="scoreLabel">Điểm 0</span>
+            <span id="streakLabel">🔥 0</span>
+          </div>
+        </div>
+
+        <div class="question-area" id="questionArea"></div>
+
+        <div class="feedback-line" id="feedbackLine"></div>
+      </div>
+
+      <div class="game-card summary hidden" id="summaryCard">
+        <h2 style="color: var(--ink-soft); font-weight: 700; margin: 0">
+          Kết thúc lượt chơi
+        </h2>
+        <div class="score-big" id="finalScore">0/10</div>
+        <p id="finalNote">Chơi tiếp để nhớ số lâu hơn nhé!</p>
+        <div class="summary-actions">
+          <button class="btn-primary" id="retryBtn">Chơi lại</button>
+          <button class="btn-secondary" id="changeBtn">
+            Đổi mức / cách chơi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // ---------- Chinese number conversion (0-999, simplified) ----------
+        var DIGIT = [
+          "零",
+          "一",
+          "二",
+          "三",
+          "四",
+          "五",
+          "六",
+          "七",
+          "八",
+          "九",
+        ];
+        var UNIT = ["", "十", "百", "千"];
+
+        function toHanzi(num) {
+          if (num === 0) return "零";
+          var s = String(num);
+          var len = s.length;
+          var result = "";
+          var lastZero = false;
+          for (var i = 0; i < len; i++) {
+            var d = Number(s[i]);
+            var unitPos = len - i - 1;
+            if (d === 0) {
+              lastZero = true;
+            } else {
+              if (lastZero) {
+                result += "零";
+                lastZero = false;
+              }
+              var omitLeadingOne = d === 1 && unitPos === 1 && i === 0;
+              if (!omitLeadingOne) {
+                result += DIGIT[d];
+              }
+              result += UNIT[unitPos];
+            }
+          }
+          return result;
+        }
+
+        // ---------- State ----------
+        var LEVELS = {
+          basic: { label: "Cơ bản", sub: "0 – 10", min: 0, max: 10 },
+          mid: { label: "Trung bình", sub: "11 – 99", min: 11, max: 99 },
+          hard: { label: "Nâng cao", sub: "100 – 999", min: 100, max: 999 },
+        };
+        var MODES = {
+          see: { label: "Nhìn số", sub: "chọn chữ Hán" },
+          hear: { label: "Nghe đọc", sub: "chọn con số" },
+          type: { label: "Gõ đáp án", sub: "điền con số" },
+        };
+
+        var state = {
+          level: "basic",
+          mode: "see",
+          round: [],
+          index: 0,
+          score: 0,
+          streak: 0,
+          bestStreak: 0,
+          answered: false,
+        };
+
+        var ROUND_LEN = 10;
+        var highScore = 0;
+
+        try {
+          var saved = localStorage.getItem("zh-count-game-highscore");
+          if (saved !== null) highScore = parseInt(saved, 10) || 0;
+        } catch (e) {
+          /* storage unavailable, ignore */
+        }
+
+        // ---------- DOM refs ----------
+        var levelRow = document.getElementById("levelRow");
+        var modeRow = document.getElementById("modeRow");
+        var gameCard = document.getElementById("gameCard");
+        var summaryCard = document.getElementById("summaryCard");
+        var setupPanel = document.getElementById("setupPanel");
+        var dotsEl = document.getElementById("dots");
+        var scoreLabel = document.getElementById("scoreLabel");
+        var streakLabel = document.getElementById("streakLabel");
+        var questionArea = document.getElementById("questionArea");
+        var feedbackLine = document.getElementById("feedbackLine");
+        var highscoreBadge = document.getElementById("highscoreBadge");
+        var finalScore = document.getElementById("finalScore");
+        var finalNote = document.getElementById("finalNote");
+        var retryBtn = document.getElementById("retryBtn");
+        var changeBtn = document.getElementById("changeBtn");
+
+        function updateHighscoreBadge() {
+          highscoreBadge.textContent =
+            "🏆 Kỷ lục: " + highScore + "/" + ROUND_LEN;
+        }
+        updateHighscoreBadge();
+
+        // ---------- Build selectors ----------
+        function buildSelectorRow(container, dict, currentKey, onPick) {
+          container.innerHTML = "";
+          Object.keys(dict).forEach(function (key) {
+            var item = dict[key];
+            var btn = document.createElement("button");
+            btn.className =
+              "choice-btn" + (key === currentKey ? " active" : "");
+            btn.innerHTML = item.label + "<small>" + item.sub + "</small>";
+            btn.addEventListener("click", function () {
+              onPick(key);
+            });
+            container.appendChild(btn);
+          });
+        }
+
+        function refreshSelectors() {
+          buildSelectorRow(levelRow, LEVELS, state.level, function (key) {
+            state.level = key;
+            refreshSelectors();
+            startRound();
+          });
+          buildSelectorRow(modeRow, MODES, state.mode, function (key) {
+            state.mode = key;
+            refreshSelectors();
+            startRound();
+          });
+        }
+
+        // ---------- Round management ----------
+        function randInt(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function shuffle(arr) {
+          for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = tmp;
+          }
+          return arr;
+        }
+
+        function makeDistractorPool(correct, min, max, count) {
+          var pool = new Set([correct]);
+          var span = Math.max(4, Math.floor((max - min) / 8));
+          var guard = 0;
+          while (pool.size < count && guard < 200) {
+            guard++;
+            var offset = randInt(1, span);
+            var sign = Math.random() < 0.5 ? -1 : 1;
+            var candidate = correct + sign * offset;
+            if (candidate < min || candidate > max) {
+              candidate = correct + sign * -1 * offset;
+            }
+            if (candidate >= min && candidate <= max) {
+              pool.add(candidate);
+            }
+          }
+          var fallback = min;
+          while (pool.size < count && fallback <= max) {
+            pool.add(fallback);
+            fallback++;
+          }
+          return shuffle(Array.from(pool));
+        }
+
+        function buildRoundNumbers() {
+          var lvl = LEVELS[state.level];
+          var nums = [];
+          var guard = 0;
+          while (nums.length < ROUND_LEN && guard < 500) {
+            guard++;
+            var n = randInt(lvl.min, lvl.max);
+            nums.push(n);
+          }
+          return nums;
+        }
+
+        function startRound() {
+          state.round = buildRoundNumbers();
+          state.index = 0;
+          state.score = 0;
+          state.streak = 0;
+          state.bestStreak = 0;
+          state.answered = false;
+          gameCard.classList.remove("hidden");
+          summaryCard.classList.add("hidden");
+          renderDots();
+          updateStatLine();
+          renderQuestion();
+        }
+
+        function renderDots() {
+          dotsEl.innerHTML = "";
+          for (var i = 0; i < ROUND_LEN; i++) {
+            var d = document.createElement("div");
+            d.className =
+              "dot" +
+              (i < state.index ? " done" : i === state.index ? " current" : "");
+            dotsEl.appendChild(d);
+          }
+        }
+
+        function updateStatLine() {
+          scoreLabel.textContent = "Điểm " + state.score;
+          streakLabel.textContent = "🔥 " + state.streak;
+        }
+
+        function speakHanzi(text) {
+          try {
+            if (!("speechSynthesis" in window)) return;
+            window.speechSynthesis.cancel();
+            var utter = new SpeechSynthesisUtterance(text);
+            utter.lang = "zh-CN";
+            utter.rate = 0.85;
+            window.speechSynthesis.speak(utter);
+          } catch (e) {
+            /* speech unavailable */
+          }
+        }
+
+        function renderQuestion() {
+          feedbackLine.textContent = "";
+          feedbackLine.className = "feedback-line";
+          state.answered = false;
+          questionArea.innerHTML = "";
+
+          var lvl = LEVELS[state.level];
+          var correct = state.round[state.index];
+          var hanzi = toHanzi(correct);
+
+          if (state.mode === "see") {
+            var big = document.createElement("div");
+            big.className = "big-number";
+            big.textContent = correct;
+            questionArea.appendChild(big);
+
+            var grid = document.createElement("div");
+            grid.className = "options-grid";
+            var options = makeDistractorPool(correct, lvl.min, lvl.max, 4);
+            options.forEach(function (optNum) {
+              var b = document.createElement("button");
+              b.className = "opt-btn";
+              b.textContent = toHanzi(optNum);
+              b.addEventListener("click", function () {
+                handleChoice(optNum === correct, b, grid);
+              });
+              grid.appendChild(b);
+            });
+            questionArea.appendChild(grid);
+          } else if (state.mode === "hear") {
+            var speakBtn = document.createElement("button");
+            speakBtn.className = "speak-btn";
+            speakBtn.textContent = "🔊";
+            speakBtn.addEventListener("click", function () {
+              speakHanzi(hanzi);
+            });
+            questionArea.appendChild(speakBtn);
+
+            var hint = document.createElement("div");
+            hint.className = "speak-hint";
+            hint.textContent = "Bấm để nghe, có thể nghe lại nhiều lần";
+            questionArea.appendChild(hint);
+
+            var grid2 = document.createElement("div");
+            grid2.className = "options-grid";
+            var options2 = makeDistractorPool(correct, lvl.min, lvl.max, 4);
+            options2.forEach(function (optNum) {
+              var b2 = document.createElement("button");
+              b2.className = "opt-btn numeral";
+              b2.textContent = optNum;
+              b2.addEventListener("click", function () {
+                handleChoice(optNum === correct, b2, grid2);
+              });
+              grid2.appendChild(b2);
+            });
+            questionArea.appendChild(grid2);
+
+            setTimeout(function () {
+              speakHanzi(hanzi);
+            }, 300);
+          } else if (state.mode === "type") {
+            var bigH = document.createElement("div");
+            bigH.className = "big-hanzi";
+            bigH.textContent = hanzi;
+            questionArea.appendChild(bigH);
+
+            var row = document.createElement("div");
+            row.className = "type-row";
+            var input = document.createElement("input");
+            input.type = "text";
+            input.inputMode = "numeric";
+            input.placeholder = "Nhập số...";
+            var submitBtn = document.createElement("button");
+            submitBtn.textContent = "Kiểm tra";
+
+            function submit() {
+              if (state.answered) return;
+              var val = parseInt(input.value.trim(), 10);
+              var ok = val === correct;
+              input.disabled = true;
+              submitBtn.disabled = true;
+              input.style.borderColor = ok ? "var(--jade)" : "var(--wrong)";
+              handleChoice(ok, null, null, correct);
+            }
+            submitBtn.addEventListener("click", submit);
+            input.addEventListener("keydown", function (ev) {
+              if (ev.key === "Enter") submit();
+            });
+
+            row.appendChild(input);
+            row.appendChild(submitBtn);
+            questionArea.appendChild(row);
+            setTimeout(function () {
+              input.focus();
+            }, 50);
+          }
+        }
+
+        function handleChoice(isCorrect, clickedBtn, groupEl, correctNum) {
+          if (state.answered) return;
+          state.answered = true;
+
+          if (groupEl) {
+            var children = Array.from(groupEl.children);
+            children.forEach(function (btn) {
+              btn.disabled = true;
+            });
+            if (isCorrect) {
+              clickedBtn.classList.add("correct");
+            } else {
+              clickedBtn.classList.add("wrong");
+              children.forEach(function (btn) {
+                if (
+                  state.mode === "see" &&
+                  btn.textContent === toHanzi(state.round[state.index])
+                ) {
+                  btn.classList.add("correct");
+                }
+                if (
+                  state.mode === "hear" &&
+                  Number(btn.textContent) === state.round[state.index]
+                ) {
+                  btn.classList.add("correct");
+                }
+              });
+            }
+          }
+
+          if (isCorrect) {
+            state.score++;
+            state.streak++;
+            if (state.streak > state.bestStreak)
+              state.bestStreak = state.streak;
+            feedbackLine.textContent = "✅ Chính xác!";
+            feedbackLine.classList.add("correct");
+          } else {
+            state.streak = 0;
+            var correctText =
+              toHanzi(state.round[state.index]) +
+              " (" +
+              state.round[state.index] +
+              ")";
+            feedbackLine.textContent =
+              "❌ Chưa đúng — đáp án là " + correctText;
+            feedbackLine.classList.add("wrong");
+          }
+          updateStatLine();
+
+          var nextBtn = document.createElement("button");
+          nextBtn.className = "next-btn";
+          nextBtn.textContent =
+            state.index === ROUND_LEN - 1 ? "Xem kết quả" : "Câu tiếp theo →";
+          nextBtn.addEventListener("click", advance);
+          questionArea.appendChild(nextBtn);
+        }
+
+        function advance() {
+          state.index++;
+          if (state.index >= ROUND_LEN) {
+            finishRound();
+          } else {
+            renderDots();
+            renderQuestion();
+          }
+        }
+
+        function finishRound() {
+          gameCard.classList.add("hidden");
+          summaryCard.classList.remove("hidden");
+          finalScore.textContent = state.score + "/" + ROUND_LEN;
+
+          var msg;
+          if (state.score === ROUND_LEN)
+            msg =
+              "Xuất sắc! Trọn vẹn " +
+              ROUND_LEN +
+              "/" +
+              ROUND_LEN +
+              " — chuỗi đúng liên tiếp dài nhất: " +
+              state.bestStreak +
+              " câu.";
+          else if (state.score >= ROUND_LEN * 0.7)
+            msg = "Khá tốt! Chuỗi đúng dài nhất: " + state.bestStreak + " câu.";
+          else msg = "Cứ luyện thêm vài lượt nữa là nhớ ngay thôi.";
+          finalNote.textContent = msg;
+
+          if (state.score > highScore) {
+            highScore = state.score;
+            try {
+              localStorage.setItem(
+                "zh-count-game-highscore",
+                String(highScore)
+              );
+            } catch (e) {}
+            updateHighscoreBadge();
+          }
+        }
+
+        retryBtn.addEventListener("click", startRound);
+        changeBtn.addEventListener("click", function () {
+          summaryCard.classList.add("hidden");
+          gameCard.classList.add("hidden");
+        });
+
+        // ---------- Init ----------
+        refreshSelectors();
+        startRound();
+      })();
+    </script>
+  </body>
+</html>
